@@ -1,10 +1,11 @@
 @echo off
+chcp 65001 >nul
 echo ====================================
 echo 正在上传代码到GitHub...
 echo ====================================
 echo.
 
-cd /d "%~dp0"
+cd /d "%~dp0交易量"
 
 echo 步骤1: 检查Git状态...
 git status
@@ -29,6 +30,9 @@ git push -u origin main
 echo.
 echo ====================================
 echo 上传完成！
+echo.
 echo 仓库地址: https://github.com/laoyaoshine/crypto-volume-trading-signals
+echo.
+echo 访问仓库查看您的代码！
 echo ====================================
 pause
