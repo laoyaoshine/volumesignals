@@ -41,12 +41,20 @@ class CryptoAnalyzer:
                 'enableRateLimit': NETWORK_CONFIG.get('rate_limit', True),
                 'timeout': NETWORK_CONFIG.get('timeout', 30000)
             }
+            
+            # 添加交易所特定的options配置（如合约支持）
+            options = ex.get('options', {})
+            if options:
+                params['options'] = options
+            
             proxies = NETWORK_CONFIG.get('proxies')
             if proxies:
                 params['proxies'] = proxies
             
             try:
-                logger.info(f"正在初始化交易所: {name} ({ex.get('description', '')})")
+                # 根据配置显示市场类型
+                market_type = options.get('defaultType', 'spot')
+                logger.info(f"正在初始化交易所: {name} ({ex.get('description', '')}) [{market_type} 市场]")
                 inst = getattr(ccxt, name)(params)
                 
                 # 测试连接（带超时控制）
@@ -116,7 +124,7 @@ class CryptoAnalyzer:
         return float(quote_volume or 0)
 
     def get_tradable_symbols(self, quote_currency: str = 'USDT', min_volume: float = 1000000) -> List[str]:
-        """聚合多个交易所可交易对，按成交额过滤。"""
+        """聚合多个交易所可交易对，按成交额过滤。支持现货和合约市场。"""
         aggregated: List[str] = []
         exchange_by_symbol: Dict[str, str] = {}
         
@@ -124,15 +132,26 @@ class CryptoAnalyzer:
         
         for name, ex_conf, inst in self.exchanges:
             try:
-                logger.info(f"正在处理交易所: {name}")
+                # 获取市场类型
+                options = ex_conf.get('options', {})
+                market_type = options.get('defaultType', 'spot')
+                logger.info(f"正在处理交易所: {name} (市场类型: {market_type})")
+                
                 markets = inst.load_markets()
                 
                 # 优先使用各自配置的 quote 过滤
                 q = ex_conf.get('quote_currency', quote_currency)
                 mv = ex_conf.get('min_volume_usd', min_volume)
-                candidates = [s for s in markets.keys() if s.endswith(f'/{q}')]
                 
-                logger.info(f"{name} 找到 {len(candidates)} 个候选交易对")
+                # 根据市场类型过滤交易对
+                if market_type == 'future':
+                    # 过滤合约交易对
+                    candidates = [s for s in markets.keys() if s.endswith(f'/{q}') and markets[s].get('type') == 'future']
+                else:
+                    # 过滤现货交易对
+                    candidates = [s for s in markets.keys() if s.endswith(f'/{q}') and markets[s].get('type') == 'spot']
+                
+                logger.info(f"{name} [{market_type}] 找到 {len(candidates)} 个候选交易对")
                 
                 # 批量获取
                 tickers = {}

@@ -43,7 +43,10 @@ EXCHANGES = [
         'quote_currency': 'USDT',
         'min_volume_usd': 1_000_000,
         'priority': 1,  # 优先级，数字越小优先级越高
-        'description': '币安 - 全球最大加密货币交易所'
+        'description': '币安 - 全球最大加密货币交易所',
+        'options': {
+            'defaultType': 'future',  # 默认市场类型：'spot'现货 或 'future'合约
+        }
     },
     {
         'name': 'okx',
@@ -51,7 +54,10 @@ EXCHANGES = [
         'quote_currency': 'USDT',
         'min_volume_usd': 800_000,
         'priority': 2,
-        'description': 'OKX - 知名衍生品交易所'
+        'description': 'OKX - 知名衍生品交易所',
+        'options': {
+            'defaultType': 'future',
+        }
     },
     {
         'name': 'kucoin',
@@ -75,7 +81,10 @@ EXCHANGES = [
         'quote_currency': 'USDT',
         'min_volume_usd': 400_000,
         'priority': 5,
-        'description': 'Bybit - 专业衍生品交易所'
+        'description': 'Bybit - 专业衍生品交易所',
+        'options': {
+            'defaultType': 'future',
+        }
     },
     {
         'name': 'gateio',
@@ -148,6 +157,7 @@ SYMBOL_FILTER = {
     'quote_currency': 'USDT',     # 计价货币
     'min_volume_usd': 1000000,    # 最小24小时交易量（美元）
     'max_symbols': 200,           # 最大分析交易对数量
+    'market_types': ['spot', 'future'],  # 市场类型：现货和合约都支持
 }
 
 # 技术指标配置
