@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { TradingPair, Exchange, Portfolio, Trade } from '../types/trading';
+import { TradingPair, Exchange, Portfolio, Trade, MarketType } from '../types/trading';
 import { generateMockTradingPairs, getExchanges, updateExchangeStatus } from '../utils/mockData';
 
 export const useTradingData = () => {
@@ -15,12 +15,15 @@ export const useTradingData = () => {
   });
   const [autoTrading, setAutoTrading] = useState(false);
   const [signalFilter, setSignalFilter] = useState<'ALL' | 'BUY' | 'SELL' | 'HOLD'>('ALL');
+  const [marketType, setMarketType] = useState<MarketType>('future'); // 默认合约市场
 
   // 更新交易数据
   const updateTradingData = useCallback(() => {
     const newPairs = generateMockTradingPairs();
-    setTradingPairs(newPairs);
-  }, []);
+    // 根据marketType过滤数据
+    const filteredPairs = newPairs.filter(pair => pair.marketType === marketType);
+    setTradingPairs(filteredPairs);
+  }, [marketType]);
 
   // 初始化数据
   useEffect(() => {
@@ -31,6 +34,11 @@ export const useTradingData = () => {
     const interval = setInterval(updateTradingData, 30000);
     return () => clearInterval(interval);
   }, [updateTradingData]);
+
+  // 市场类型变化时更新数据
+  useEffect(() => {
+    updateTradingData();
+  }, [marketType]);
 
   // 自动交易逻辑
   useEffect(() => {
@@ -109,9 +117,11 @@ export const useTradingData = () => {
     exchanges,
     portfolio,
     autoTrading,
+    marketType,
     signalFilter,
     setAutoTrading,
     setSignalFilter,
+    setMarketType,
     executeTrade,
     toggleExchange,
     updateTradingData,

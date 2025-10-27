@@ -65,16 +65,22 @@ export function generateMockTradingPairs(): TradingPair[] {
       const previous = klineData[klineData.length - 2];
       const change24h = ((latest.close - previous.close) / previous.close) * 100;
       
-      pairs.push({
-        symbol,
-        exchange: exchange.name,
-        price: latest.close,
-        change24h,
-        volume24h: latest.volume,
-        volumeRatio,
-        signal,
-        maAlignment,
-        klineData,
+      // 生成现货和合约两种数据
+      const marketTypes: ('spot' | 'future')[] = ['spot', 'future'];
+      
+      marketTypes.forEach(marketType => {
+        pairs.push({
+          symbol,
+          exchange: exchange.name,
+          marketType,
+          price: latest.close,
+          change24h,
+          volume24h: latest.volume,
+          volumeRatio,
+          signal,
+          maAlignment,
+          klineData,
+        });
       });
     });
   });

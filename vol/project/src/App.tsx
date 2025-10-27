@@ -10,9 +10,11 @@ function App() {
     exchanges,
     portfolio,
     autoTrading,
+    marketType,
     signalFilter,
     setAutoTrading,
     setSignalFilter,
+    setMarketType,
     executeTrade,
     toggleExchange,
     updateTradingData,
@@ -29,6 +31,30 @@ function App() {
           </div>
           
           <div className="flex items-center gap-4">
+            {/* 市场类型切换 */}
+            <div className="flex items-center gap-2 bg-crypto-card border border-crypto-border rounded-lg p-1">
+              <button
+                onClick={() => setMarketType('spot')}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  marketType === 'spot'
+                    ? 'bg-crypto-blue text-white'
+                    : 'text-gray-400 hover:text-white'
+                }`}
+              >
+                现货
+              </button>
+              <button
+                onClick={() => setMarketType('future')}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  marketType === 'future'
+                    ? 'bg-crypto-blue text-white'
+                    : 'text-gray-400 hover:text-white'
+                }`}
+              >
+                合约
+              </button>
+            </div>
+            
             <button
               onClick={updateTradingData}
               className="flex items-center gap-2 px-4 py-2 bg-crypto-card border border-crypto-border rounded-lg text-white hover:border-crypto-blue/50 transition-colors"

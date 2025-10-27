@@ -13,6 +13,7 @@ export interface KlineData {
 export interface TradingPair {
   symbol: string;
   exchange: string;
+  marketType: 'spot' | 'future';  // 市场类型：现货或合约
   price: number;
   change24h: number;
   volume24h: number;
@@ -21,6 +22,8 @@ export interface TradingPair {
   maAlignment: 'BULLISH' | 'BEARISH' | 'NEUTRAL';
   klineData: KlineData[];
 }
+
+export type MarketType = 'spot' | 'future';
 
 export interface Exchange {
   name: string;
