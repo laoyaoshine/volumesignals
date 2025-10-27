@@ -76,3 +76,6 @@ Thumbs.db
 htmlcov/
 .pytest_cache/
 .tox/
+
+# Chinese directories (empty or deprecated)
+交易量/
